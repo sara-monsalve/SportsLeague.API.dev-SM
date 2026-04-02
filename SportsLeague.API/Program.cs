@@ -32,6 +32,10 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 //Controllers
 builder.Services.AddControllers();
 
+
+//Sponsor
+builder.Services.AddScoped<ISponsorRepository, SponsorRepository>();
+
 //Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
