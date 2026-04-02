@@ -7,12 +7,12 @@ using SportsLeague.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Entity Framework Core
+// Entity Framework Core
 builder.Services.AddDbContext<LeagueDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//Repositories
+// Repositories
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
@@ -20,29 +20,33 @@ builder.Services.AddScoped<IRefereeRepository, RefereeRepository>();
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<ITournamentTeamRepository, TournamentTeamRepository>();
 
-//Services
+//NUEVOS
+builder.Services.AddScoped<ISponsorRepository, SponsorRepository>();
+builder.Services.AddScoped<ITournamentSponsorRepository, TournamentSponsorRepository>();
+
+// Services
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IRefereeService, RefereeService>();
 builder.Services.AddScoped<ITournamentService, TournamentService>();
 
-//AutoMapper
+//NUEVOS
+builder.Services.AddScoped<ISponsorService, SponsorService>();
+builder.Services.AddScoped<ITournamentSponsorService, TournamentSponsorService>();
+
+// AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-//Controllers
+// Controllers
 builder.Services.AddControllers();
 
-
-//Sponsor
-builder.Services.AddScoped<ISponsorRepository, SponsorRepository>();
-
-//Swagger
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-//Middleware Pipeline
+// Middleware Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

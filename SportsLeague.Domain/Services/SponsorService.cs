@@ -38,7 +38,7 @@ public class SponsorService : ISponsorService
 
     public async Task<Sponsor> CreateAsync(Sponsor sponsor)
     {
-        // 🔥 VALIDACIÓN: nombre único
+        // VALIDACION
         var existing = await _sponsorRepository.GetByNameAsync(sponsor.Name);
         if (existing != null)
         {
@@ -60,7 +60,7 @@ public class SponsorService : ISponsorService
                 $"No se encontró el sponsor con ID {id}");
         }
 
-        // Validar nombre único
+        // Validar nombre unico
         if (existing.Name != sponsor.Name)
         {
             var duplicate = await _sponsorRepository.GetByNameAsync(sponsor.Name);
