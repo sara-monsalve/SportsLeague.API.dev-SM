@@ -21,7 +21,7 @@ namespace SportsLeague.DataAccess.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            // ── Team Configuration ──
+            //Team Configuration
             modelBuilder.Entity<Team>(entity =>
             {
                 entity.HasKey(t => t.Id);
@@ -43,7 +43,7 @@ namespace SportsLeague.DataAccess.Context
                       .IsUnique();
             });
 
-            // ── Player Configuration ──
+            //Player Configuration
             modelBuilder.Entity<Player>(entity =>
             {
                 entity.HasKey(p => p.Id);
@@ -64,18 +64,18 @@ namespace SportsLeague.DataAccess.Context
                 entity.Property(p => p.UpdatedAt)
                       .IsRequired(false);
 
-                // Relación 1:N con Team
+                // Relacion 1:N con Team
                 entity.HasOne(p => p.Team)
                       .WithMany(t => t.Players)
                       .HasForeignKey(p => p.TeamId)
                       .OnDelete(DeleteBehavior.Cascade);
 
-                // Índice único compuesto: número de camiseta único por equipo
+                // numero de camiseta unico por equipo
                 entity.HasIndex(p => new { p.TeamId, p.Number })
                       .IsUnique();
             });
 
-            // ── Referee Configuration ──
+            //Referee Configuration
             modelBuilder.Entity<Referee>(entity =>
             {
                 entity.HasKey(r => r.Id);
@@ -94,7 +94,7 @@ namespace SportsLeague.DataAccess.Context
                       .IsRequired(false);
             });
 
-            // ── Tournament Configuration ──
+            //Tournament Configuration
             modelBuilder.Entity<Tournament>(entity =>
             {
                 entity.HasKey(t => t.Id);
@@ -116,7 +116,7 @@ namespace SportsLeague.DataAccess.Context
                       .IsRequired(false);
             });
 
-            // ── TournamentTeam Configuration ──
+            //TournamentTeam Configuration
             modelBuilder.Entity<TournamentTeam>(entity =>
             {
                 entity.HasKey(tt => tt.Id);
@@ -127,19 +127,19 @@ namespace SportsLeague.DataAccess.Context
                 entity.Property(tt => tt.UpdatedAt)
                       .IsRequired(false);
 
-                // Relación con Tournament
+                //Relacion con Tournament
                 entity.HasOne(tt => tt.Tournament)
                       .WithMany(t => t.TournamentTeams)
                       .HasForeignKey(tt => tt.TournamentId)
                       .OnDelete(DeleteBehavior.Cascade);
 
-                // Relación con Team
+                //Relacion con Team
                 entity.HasOne(tt => tt.Team)
                       .WithMany(t => t.TournamentTeams)
                       .HasForeignKey(tt => tt.TeamId)
                       .OnDelete(DeleteBehavior.Cascade);
 
-                // Índice único compuesto: un equipo solo una vez por torneo
+                //un equipo solo una vez por torneo
                 entity.HasIndex(tt => new { tt.TournamentId, tt.TeamId })
                       .IsUnique();
             });
