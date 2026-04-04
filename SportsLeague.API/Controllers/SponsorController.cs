@@ -26,8 +26,9 @@ public class SponsorController : ControllerBase
     public async Task<IActionResult> GetById(int id)
     {
         var item = await _service.GetByIdAsync(id);
+
         if (item == null)
-            return NotFound();
+            return NotFound(new { message = $"No se encontró el sponsor con ID {id}" });
 
         return Ok(item);
     }
@@ -35,21 +36,58 @@ public class SponsorController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] Sponsor sponsor)
     {
-        var created = await _service.CreateAsync(sponsor);
-        return Ok(created);
+        try
+        {
+            var created = await _service.CreateAsync(sponsor);
+            return Ok(created);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "Error interno del servidor" });
+        }
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] Sponsor sponsor)
     {
-        await _service.UpdateAsync(id, sponsor);
-        return NoContent();
+        try
+        {
+            await _service.UpdateAsync(id, sponsor);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "Error interno del servidor" });
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _service.DeleteAsync(id);
-        return NoContent();
+        try
+        {
+            await _service.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { message = "Error interno del servidor" });
+        }
     }
 }
