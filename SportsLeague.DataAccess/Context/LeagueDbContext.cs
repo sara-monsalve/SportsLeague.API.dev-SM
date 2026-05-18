@@ -19,6 +19,8 @@ namespace SportsLeague.DataAccess.Context
         public DbSet<TournamentSponsor> TournamentSponsors => Set<TournamentSponsor>();
         public DbSet<Match> Matches => Set<Match>();
         public DbSet<MatchResult> MatchResults => Set<MatchResult>();
+        public DbSet<Goal> Goals => Set<Goal>();
+        public DbSet<Card> Cards => Set<Card>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -157,6 +159,7 @@ namespace SportsLeague.DataAccess.Context
 
                 entity.Property(m => m.MatchDate).IsRequired();
                 entity.Property(m => m.Location).IsRequired().HasMaxLength(150);
+                entity.Property(m => m.Status).IsRequired();
                 entity.Property(m => m.CreatedAt).IsRequired();
                 entity.Property(m => m.UpdatedAt).IsRequired(false);
 
@@ -197,6 +200,57 @@ namespace SportsLeague.DataAccess.Context
                     .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(mr => mr.MatchId).IsUnique();
+            });
+
+            // Goal
+            modelBuilder.Entity<Goal>(entity =>
+            {
+                entity.HasKey(g => g.Id);
+
+                entity.Property(g => g.Minute).IsRequired();
+                entity.Property(g => g.CreatedAt).IsRequired();
+                entity.Property(g => g.UpdatedAt).IsRequired(false);
+
+                entity.HasOne(g => g.Match)
+                    .WithMany()
+                    .HasForeignKey(g => g.MatchId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(g => g.Player)
+                    .WithMany()
+                    .HasForeignKey(g => g.PlayerId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(g => g.Team)
+                    .WithMany()
+                    .HasForeignKey(g => g.TeamId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Card
+            modelBuilder.Entity<Card>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+
+                entity.Property(c => c.Minute).IsRequired();
+                entity.Property(c => c.Type).IsRequired().HasMaxLength(20);
+                entity.Property(c => c.CreatedAt).IsRequired();
+                entity.Property(c => c.UpdatedAt).IsRequired(false);
+
+                entity.HasOne(c => c.Match)
+                    .WithMany()
+                    .HasForeignKey(c => c.MatchId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(c => c.Player)
+                    .WithMany()
+                    .HasForeignKey(c => c.PlayerId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(c => c.Referee)
+                    .WithMany()
+                    .HasForeignKey(c => c.RefereeId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }
