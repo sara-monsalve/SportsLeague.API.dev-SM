@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using SportsLeague.DataAccess.Context;
 using SportsLeague.DataAccess.Repositories;
@@ -7,54 +8,43 @@ using SportsLeague.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Entity Framework Core
 builder.Services.AddDbContext<LeagueDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Repositories
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IRefereeRepository, RefereeRepository>();
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<ITournamentTeamRepository, TournamentTeamRepository>();
-
-// Sponsors
 builder.Services.AddScoped<ISponsorRepository, SponsorRepository>();
 builder.Services.AddScoped<ITournamentSponsorRepository, TournamentSponsorRepository>();
-
-// Matches
 builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 builder.Services.AddScoped<IMatchResultRepository, MatchResultRepository>();
+builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+builder.Services.AddScoped<ICardRepository, CardRepository>();
 
-// Services
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IRefereeService, RefereeService>();
 builder.Services.AddScoped<ITournamentService, TournamentService>();
-
-// Sponsor Services
 builder.Services.AddScoped<ISponsorService, SponsorService>();
 builder.Services.AddScoped<ITournamentSponsorService, TournamentSponsorService>();
-
-// Match Services
 builder.Services.AddScoped<IMatchService, MatchService>();
 builder.Services.AddScoped<IMatchResultService, MatchResultService>();
+builder.Services.AddScoped<IGoalService, GoalService>();
+builder.Services.AddScoped<ICardService, CardService>();
 
-// AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-// Controllers
 builder.Services.AddControllers();
-
-// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Middleware Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
